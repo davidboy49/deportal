@@ -47,6 +47,7 @@ npm run build
 ## Auth secret notes
 - `AUTH_SECRET` is preferred in this project.
 - `NEXTAUTH_SECRET` is also supported for compatibility.
+- If neither is provided, the app now falls back to Vercel-provided env (`VERCEL_PROJECT_PRODUCTION_URL` or `VERCEL_URL`) to prevent runtime crashes, but you should still set an explicit strong secret in production.
 
 ## Switching to Postgres
 - Update `prisma/schema.prisma` datasource `provider` to `postgresql`

@@ -1,5 +1,10 @@
 import type { NextAuthConfig } from 'next-auth';
 
+const fallbackSecret =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ||
+  process.env.VERCEL_URL ||
+  'insecure-fallback-secret-change-me';
+
 const authConfig = {
   pages: { signIn: '/login' },
   providers: [],
@@ -17,7 +22,7 @@ const authConfig = {
       return session;
     },
   },
-  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? (process.env.NODE_ENV !== "production" ? "dev-insecure-secret-change-me" : undefined),
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? fallbackSecret,
 } satisfies NextAuthConfig;
 
 export default authConfig;
