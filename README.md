@@ -15,6 +15,8 @@ Production-ready personal app portal dashboard built with Next.js 14 App Router,
 - **Password:** `Admin123!`
 
 ## Setup
+> In production (e.g., Vercel), set either `AUTH_SECRET` or `NEXTAUTH_SECRET` to a long random value.
+
 1. Install dependencies:
    ```bash
    npm install
@@ -41,6 +43,10 @@ Production-ready personal app portal dashboard built with Next.js 14 App Router,
 npm run lint
 npm run build
 ```
+
+## Auth secret notes
+- `AUTH_SECRET` is preferred in this project.
+- `NEXTAUTH_SECRET` is also supported for compatibility.
 
 ## Switching to Postgres
 - Update `prisma/schema.prisma` datasource `provider` to `postgresql`

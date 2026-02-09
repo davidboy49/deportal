@@ -14,7 +14,7 @@ export default async function PortalLayout({ children }: { children: React.React
             App Portal
           </Link>
           <div className="flex items-center gap-2">
-            {session?.user.role === 'ADMIN' && (
+            {session?.user?.role === 'ADMIN' && (
               <Link href="/admin" className="text-sm font-medium text-blue-700">
                 Admin Portal
               </Link>

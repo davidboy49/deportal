@@ -17,7 +17,7 @@ const authConfig = {
       return session;
     },
   },
-  secret: process.env.AUTH_SECRET,
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET ?? (process.env.NODE_ENV !== "production" ? "dev-insecure-secret-change-me" : undefined),
 } satisfies NextAuthConfig;
 
 export default authConfig;

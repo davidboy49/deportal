@@ -5,7 +5,7 @@ import authConfig from '@/auth.config';
 const { auth } = NextAuth(authConfig);
 
 export default auth((req) => {
-  const isLoggedIn = !!req.auth;
+  const isLoggedIn = !!req.auth?.user;
   const pathname = req.nextUrl.pathname;
 
   if (!isLoggedIn && (pathname === '/' || pathname.startsWith('/admin'))) {
@@ -16,7 +16,7 @@ export default auth((req) => {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
-  if (pathname.startsWith('/admin') && req.auth?.user.role !== 'ADMIN') {
+  if (pathname.startsWith('/admin') && req.auth?.user?.role !== 'ADMIN') {
     return NextResponse.redirect(new URL('/', req.url));
   }
 
