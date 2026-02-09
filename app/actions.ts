@@ -1,12 +1,15 @@
 'use server';
 
+import bcrypt from 'bcryptjs';
 import { revalidatePath } from 'next/cache';
 import { AuthError } from 'next-auth';
 import { auth, requireAdmin, signIn, signOut } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
-import { appSchema, categorySchema, settingSchema } from '@/lib/validations';
+import { appSchema, categorySchema, settingSchema, signupSchema } from '@/lib/validations';
 
-export async function loginAction(_prevState: { error?: string }, formData: FormData) {
+type AuthState = { error?: string; success?: string };
+
+export async function loginAction(_prevState: AuthState, formData: FormData): Promise<AuthState | void> {
   try {
     await signIn('credentials', {
       email: String(formData.get('email') ?? ''),
@@ -17,6 +20,38 @@ export async function loginAction(_prevState: { error?: string }, formData: Form
     if (error instanceof AuthError) return { error: 'Invalid credentials' };
     throw error;
   }
+}
+
+export async function signupAction(_prevState: AuthState, formData: FormData): Promise<AuthState> {
+  const parsed = signupSchema.safeParse({
+    email: String(formData.get('email') ?? '').toLowerCase(),
+    password: String(formData.get('password') ?? ''),
+    confirmPassword: String(formData.get('confirmPassword') ?? ''),
+  });
+
+  if (!parsed.success) {
+    return { error: parsed.error.issues[0]?.message ?? 'Invalid sign up data' };
+  }
+
+  const existing = await prisma.user.findUnique({ where: { email: parsed.data.email } });
+  if (existing) return { error: 'Email already exists' };
+
+  const passwordHash = await bcrypt.hash(parsed.data.password, 10);
+  await prisma.user.create({
+    data: {
+      email: parsed.data.email,
+      passwordHash,
+      role: 'USER',
+    },
+  });
+
+  await signIn('credentials', {
+    email: parsed.data.email,
+    password: parsed.data.password,
+    redirectTo: '/',
+  });
+
+  return { success: 'Account created' };
 }
 
 export async function logoutAction() {
