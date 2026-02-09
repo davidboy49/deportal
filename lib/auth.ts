@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
+import authConfig from '@/auth.config';
 import { prisma } from './prisma';
 
 const loginSchema = z.object({
@@ -9,8 +10,8 @@ const loginSchema = z.object({
   password: z.string().min(8),
 });
 
-export const { handlers, signIn, signOut, auth } = NextAuth({  session: { strategy: 'jwt' },
-  pages: { signIn: '/login' },
+export const { handlers, signIn, signOut, auth } = NextAuth({
+  ...authConfig,
   providers: [
     Credentials({
       credentials: {
@@ -32,25 +33,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({  session: { strate
         return {
           id: user.id,
           email: user.email,
-          role: user.role,
+          role: (user.role === 'ADMIN' ? 'ADMIN' : 'USER') as 'USER' | 'ADMIN',
         };
       },
     }),
   ],
-  callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.role = user.role;
-      return token;
-    },
-    async session({ session, token }) {
-      if (session.user) {
-        session.user.id = token.sub as string;
-        session.user.role = token.role as 'USER' | 'ADMIN';
-      }
-      return session;
-    },
-  },
-  secret: process.env.AUTH_SECRET,
 });
 
 export async function requireAdmin() {

@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { PrismaClient, Role } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -9,8 +9,8 @@ async function main() {
 
   await prisma.user.upsert({
     where: { email: adminEmail },
-    update: { passwordHash, role: Role.ADMIN },
-    create: { email: adminEmail, passwordHash, role: Role.ADMIN },
+    update: { passwordHash, role: "ADMIN" },
+    create: { email: adminEmail, passwordHash, role: "ADMIN" },
   });
 
   const [productivity, communication, devtools] = await Promise.all([
@@ -28,7 +28,7 @@ async function main() {
         name: 'Notion',
         url: 'https://www.notion.so',
         description: 'Workspace for notes and projects',
-        tags: ['notes', 'docs'],
+        tags: 'notes,docs',
         categoryId: productivity.id,
       },
     }),
@@ -40,7 +40,7 @@ async function main() {
         name: 'Slack',
         url: 'https://slack.com',
         description: 'Team communication hub',
-        tags: ['chat', 'team'],
+        tags: 'chat,team',
         categoryId: communication.id,
       },
     }),
@@ -52,7 +52,7 @@ async function main() {
         name: 'GitHub',
         url: 'https://github.com',
         description: 'Code hosting and collaboration',
-        tags: ['code', 'git'],
+        tags: 'code,git',
         categoryId: devtools.id,
       },
     }),

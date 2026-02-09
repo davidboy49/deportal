@@ -59,7 +59,7 @@ export async function saveAppAction(input: unknown, id?: string) {
     ...parsed,
     iconUrl: parsed.iconUrl || null,
     categoryId: parsed.categoryId || null,
-    tags: parsed.tags ? parsed.tags.split(',').map((x) => x.trim()).filter(Boolean) : [],
+    tags: parsed.tags ? parsed.tags.split(',').map((x) => x.trim()).filter(Boolean).join(',') : '',
   };
 
   if (id) await prisma.app.update({ where: { id }, data });

@@ -7,16 +7,11 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-enum Role {
-  USER
-  ADMIN
-}
-
 model User {
   id           String       @id @default(cuid())
   email        String       @unique
   passwordHash String
-  role         Role         @default(USER)
+  role         String       @default("USER")
   favorites    Favorite[]
   recentOpens  RecentOpen[]
   createdAt    DateTime     @default(now())
@@ -31,7 +26,7 @@ model App {
   iconUrl     String?
   categoryId  String?
   category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
-  tags        String[]
+  tags        String @default("")
   isActive    Boolean      @default(true)
   favorites   Favorite[]
   recentOpens RecentOpen[]

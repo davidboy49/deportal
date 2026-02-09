@@ -17,10 +17,19 @@ export default async function AdminPage() {
 
   const parsed = setting ? (JSON.parse(setting.value) as { portalName?: string; logoUrl?: string }) : {};
 
+  const normalizedApps = apps.map((app) => ({
+    ...app,
+    tags: app.tags ? app.tags.split(',').map((t) => t.trim()).filter(Boolean) : [],
+  }));
+  const normalizedUsers: Array<{ id: string; email: string; role: 'USER' | 'ADMIN' }> = users.map((user) => ({
+    ...user,
+    role: (user.role === 'ADMIN' ? 'ADMIN' : 'USER') as 'USER' | 'ADMIN',
+  }));
+
   return (
     <div className="space-y-4">
       <h1 className="text-2xl font-semibold">Admin Portal</h1>
-      <AdminPanel data={{ apps, categories, users, settings: { portalName: parsed.portalName ?? 'App Portal', logoUrl: parsed.logoUrl ?? '' } }} />
+      <AdminPanel data={{ apps: normalizedApps, categories, users: normalizedUsers, settings: { portalName: parsed.portalName ?? 'App Portal', logoUrl: parsed.logoUrl ?? '' } }} />
     </div>
   );
 }
