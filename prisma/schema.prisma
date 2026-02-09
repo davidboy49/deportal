@@ -1,0 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String       @id @default(cuid())
+  email        String       @unique
+  passwordHash String
+  role         String       @default("USER")
+  favorites    Favorite[]
+  recentOpens  RecentOpen[]
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+}
+
+model App {
+  id          String       @id @default(cuid())
+  name        String
+  url         String
+  description String
+  iconUrl     String?
+  categoryId  String?
+  category    Category?    @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  tags        String @default("")
+  isActive    Boolean      @default(true)
+  favorites   Favorite[]
+  recentOpens RecentOpen[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Category {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  sortOrder Int      @default(0)
+  apps      App[]
+}
+
+model Favorite {
+  userId String
+  appId  String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app    App    @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@id([userId, appId])
+}
+
+model RecentOpen {
+  userId       String
+  appId        String
+  lastOpenedAt DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  app          App      @relation(fields: [appId], references: [id], onDelete: Cascade)
+
+  @@id([userId, appId])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
