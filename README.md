@@ -44,6 +44,11 @@ npm run lint
 npm run build
 ```
 
+## Database URL notes
+- `DATABASE_URL` must be set in production.
+- As a safety fallback, if it is missing the app uses `file:/tmp/deportal.db` on Vercel and `file:./prisma/dev.db` locally.
+- For stable production data, configure a persistent database URL (recommended: Postgres).
+
 ## Auth secret notes
 - `AUTH_SECRET` is preferred in this project.
 - `NEXTAUTH_SECRET` is also supported for compatibility.
