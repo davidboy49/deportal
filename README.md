@@ -3,10 +3,10 @@
 Production-ready personal app portal dashboard built with Next.js 14 App Router, TypeScript, Tailwind, Prisma, NextAuth, and SQLite.
 
 ## Features
-- Credentials auth (email/password) with JWT session
+- Open app portal home page without login
 - Role-based access (`USER`, `ADMIN`)
-- Protected routes via middleware (`/`, `/admin`)
-- Dashboard with grouped apps, search, category filters, favorites, and recent opens
+- Protected admin route via middleware (`/admin`)
+- Dashboard with grouped apps, search, and category filters
 - Admin portal with tabs for apps, categories, users, and settings
 - Prisma schema + seed with initial admin and sample data
 
